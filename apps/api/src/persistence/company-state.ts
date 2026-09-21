@@ -1,0 +1,2 @@
+import type { Commitment, Decision, Goal, Opportunity, Task } from "../../../../packages/domain/src/index.js";
+export interface CompanyStateRepository { activeGoals(companyId: string): Promise<Goal[]>; overdueCommitments(companyId: string): Promise<Commitment[]>; activeOpportunities(companyId: string): Promise<Opportunity[]>; pendingDecisions(companyId: string): Promise<Decision[]>; founderAttention(companyId: string): Promise<Task[]>; }

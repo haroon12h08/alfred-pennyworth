@@ -1,0 +1,3 @@
+/** Thin command surface: progress comes only from task events returned by the API. */
+export interface TaskClient { submit(input: { companyId: string; founderId: string; objective: string }): Promise<{ taskId: string; status: string; answer: string }>; }
+export const createTaskClient = (baseUrl: string): TaskClient => ({ async submit(input) { const response = await fetch(`${baseUrl}/v1/tasks`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(input) }); if (!response.ok) throw new Error("Alfred could not start the task."); return response.json() as Promise<{ taskId: string; status: string; answer: string }>; } });

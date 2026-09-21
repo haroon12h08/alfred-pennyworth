@@ -1,0 +1,6 @@
+import { describe, expect, it } from "vitest";
+import { DefaultPolicyEvaluator } from "../../apps/api/src/policies/authority.js";
+import type { Founder, PlannedAction } from "../../packages/domain/src/index.js";
+const founder: Founder = { id: "00000000-0000-4000-8000-000000000001", companyId: "00000000-0000-4000-8000-000000000002", name: "Haroon", email: "h@example.com" };
+const action = (authority: PlannedAction["authority"], risk: PlannedAction["risk"]): PlannedAction => ({ id: "00000000-0000-4000-8000-000000000003", taskId: "00000000-0000-4000-8000-000000000004", toolName: "x", intent: "x", input: {}, authority, risk });
+describe("authority policy", () => { const policy = new DefaultPolicyEvaluator(); it("allows low-risk internal work", () => expect(policy.evaluateActionAuthority({ founder, companyId: founder.companyId, action: action("AUTO_EXECUTE", "LOW") })).toBe("ALLOW")); it("requires approval for external work", () => expect(policy.evaluateActionAuthority({ founder, companyId: founder.companyId, action: action("REQUIRES_APPROVAL", "HIGH") })).toBe("REQUIRE_APPROVAL")); it("denies blocked work", () => expect(policy.evaluateActionAuthority({ founder, companyId: founder.companyId, action: action("BLOCKED", "CRITICAL") })).toBe("DENY")); });

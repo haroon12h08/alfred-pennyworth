@@ -1,0 +1,10 @@
+import { loadEnvironment } from "../../../packages/config/src/index.js";
+import { InMemoryMemoryRepository } from "./memory/contracts.js";
+import { JsonLogger } from "./observability/logger.js";
+import { createLangSmithClient } from "./observability/langsmith.js";
+import { DefaultPolicyEvaluator } from "./policies/authority.js";
+import { AlfredSupervisor } from "./alfred/supervisor.js";
+import { createApiServer } from "./api/server.js";
+const environment = loadEnvironment(); const logger = new JsonLogger(); createLangSmithClient(environment, logger);
+const runtime = new AlfredSupervisor({ policy: new DefaultPolicyEvaluator(), memory: new InMemoryMemoryRepository(), logger });
+createApiServer(runtime).listen(environment.PORT, () => logger.info("api.started", { port: environment.PORT }));
